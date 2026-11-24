@@ -191,13 +191,6 @@ export default function App() {
         >
           {theme === "dark" ? "☀" : "☾"}
         </button>
-        <button
-          type="button"
-          className="secret-hotspot"
-          aria-hidden="true"
-          tabIndex={-1}
-          onClick={requestEditor}
-        />
       </header>
 
       <main className="card">

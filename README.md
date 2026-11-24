@@ -39,7 +39,7 @@ npm run tauri:build    # сборка пакетов: .app/.dmg на mac, .msi/.
 Сборку пакетов удобно делать в GitHub Actions: `.github/workflows/build-installers.yml`. После пуша тега `v*` или запуска `workflow_dispatch` он собирает:
 
 - Windows: один 32-битный установщик `.exe` (NSIS) и `.msi` — он работает и на 32-бит, и на 64-бит Windows (WOW64), поэтому заказчику не нужно выбирать разрядность;
-- macOS universal (Intel + Apple Silicon): `Markup.Calculator_1.0.8_macos.dmg` и `Markup.Calculator_1.0.8_macos.app.zip` (внутри — universal-сборка).
+- macOS universal (Intel + Apple Silicon): `Markup.Calculator_1.0.9_macos.dmg` и `Markup.Calculator_1.0.9_macos.app.zip` (внутри — universal-сборка).
 
 Все файлы публикуются в один GitHub Release с прямой ссылкой без авторизации, если репозиторий публичный.
 
@@ -71,8 +71,7 @@ npm run tauri:build    # сборка пакетов: .app/.dmg на mac, .msi/.
 
 ## Скрытый редактор
 
-- Горячая клавиша: **⌘ + Shift + F** на macOS / **Ctrl + Shift + F** на Windows.
-- Либо невидимая область в правом верхнем углу окна — клик по ней открывает тот же запрос пароля.
+- Горячая клавиша: **⌘ + Shift + F** на macOS / **Ctrl + Shift + F** на Windows. Других способов открыть редактор нет.
 
 Начальный пароль: **Runar** (без кавычек).
 
