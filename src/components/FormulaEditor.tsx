@@ -3,6 +3,8 @@ import { revealConfig } from "../lib/config";
 import type { AppConfig, BreakdownVisibility, ConfigPayload } from "../lib/types";
 import RangeEditor from "./RangeEditor";
 
+const toStep = (value: string): number => Math.max(1, Number(value) || 1);
+
 const VISIBILITY_OPTIONS: { key: keyof BreakdownVisibility; label: string }[] = [
   { key: "rounded", label: "Округлённая сумма" },
   { key: "delivery", label: "Доставка" },
@@ -52,17 +54,31 @@ export default function FormulaEditor({
 
         <div className="editor-grid">
           <label className="field">
-            <span>Шаг округления, ₽</span>
+            <span>Округление исходной суммы, ₽</span>
             <input
               type="number"
               min="1"
               step="1"
               value={draft.roundingStep}
               onChange={(event) =>
-                onChange({ ...draft, roundingStep: Number(event.target.value) || 0 })
+                onChange({ ...draft, roundingStep: toStep(event.target.value) })
               }
             />
-            <small>Округление всегда вверх.</small>
+            <small>Вверх до выбранного шага.</small>
+          </label>
+
+          <label className="field">
+            <span>Округление итога, ₽</span>
+            <input
+              type="number"
+              min="1"
+              step="1"
+              value={draft.resultRoundingStep}
+              onChange={(event) =>
+                onChange({ ...draft, resultRoundingStep: toStep(event.target.value) })
+              }
+            />
+            <small>Вверх после расчёта наценки.</small>
           </label>
 
           <label className="field">

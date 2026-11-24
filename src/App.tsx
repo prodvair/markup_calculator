@@ -37,6 +37,14 @@ export default function App() {
   const [authError, setAuthError] = useState("");
   const [busy, setBusy] = useState(false);
   const [toast, setToast] = useState("");
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    const stored = window.localStorage.getItem("runar-calculator-theme");
+    if (stored === "light" || stored === "dark") return stored;
+    const prefersDark =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    return prefersDark ? "dark" : "light";
+  });
 
   useEffect(() => {
     let alive = true;
@@ -54,6 +62,11 @@ export default function App() {
       alive = false;
     };
   }, []);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem("runar-calculator-theme", theme);
+  }, [theme]);
 
   useEffect(() => {
     if (!toast) return;
@@ -170,6 +183,15 @@ export default function App() {
             <p>Округление → доставка → наценка</p>
           </div>
         </div>
+        <button
+          type="button"
+          className="theme-toggle"
+          onClick={() => setTheme((current) => (current === "dark" ? "light" : "dark"))}
+          title={theme === "dark" ? "Светлая тема" : "Тёмная тема"}
+          aria-label={theme === "dark" ? "Включить светлую тему" : "Включить тёмную тему"}
+        >
+          {theme === "dark" ? "☀" : "☾"}
+        </button>
         <button
           type="button"
           className="secret-hotspot"

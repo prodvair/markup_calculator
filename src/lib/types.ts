@@ -19,8 +19,10 @@ export type AppConfig = {
   version: number;
   /** Хранится как sha256:<salt>:<hex>, а не открытым текстом. */
   passwordHash: string;
-  /** Шаг округления: 100, 50, 10 и т.д. Всегда вверх. */
+  /** Шаг округления исходной суммы: 100, 50, 10 и т.д. Всегда вверх. */
   roundingStep: number;
+  /** Шаг округления итоговой суммы. Всегда вверх. */
+  resultRoundingStep: number;
   delivery: RangeRow[];
   markup: RangeRow[];
   /** Какие строки детализации показывать в основном окне. */

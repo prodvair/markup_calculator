@@ -9,6 +9,7 @@ export const DEFAULT_CONFIG: AppConfig = {
   passwordHash:
     "sha256:runar-calc-v1:7402c17c40cfc97fced8fe7851d3afc932d35169cb6e24891f501a9ef7fce25b",
   roundingStep: 100,
+  resultRoundingStep: 100,
   delivery: [
     { id: "d1", min: 0, max: 500, value: 100 },
     { id: "d2", min: 501, max: 1000, value: 200 },
@@ -136,10 +137,12 @@ export function validateRanges(rows: RangeRow[]): string | null {
 
 export function normalizeConfig(config: Partial<AppConfig>): AppConfig {
   const step = Number(config.roundingStep);
+  const resultStep = Number(config.resultRoundingStep);
   return {
     version: 1,
     passwordHash: config.passwordHash?.trim() || DEFAULT_CONFIG.passwordHash,
     roundingStep: Number.isFinite(step) && step > 0 ? round2(step) : 100,
+    resultRoundingStep: Number.isFinite(resultStep) && resultStep > 0 ? round2(resultStep) : 100,
     delivery: normalizeRanges(config.delivery ?? DEFAULT_CONFIG.delivery),
     markup: normalizeRanges(config.markup ?? DEFAULT_CONFIG.markup),
     breakdownVisible: {
@@ -165,7 +168,10 @@ export function calculate(input: number, config: AppConfig): Calculation {
   const withDelivery = round2(rounded + delivery);
   const markupPercent = pickValue(config.markup, withDelivery);
   const markupAmount = round2((withDelivery * markupPercent) / 100);
-  const total = round2(withDelivery + markupAmount);
+  // Итог округляется вверх отдельным шагом, не влияющим на расчёт наценки.
+  const rawTotal = round2(withDelivery + markupAmount);
+  const totalStep = config.resultRoundingStep > 0 ? config.resultRoundingStep : 100;
+  const total = round2(Math.ceil(rawTotal / totalStep - 1e-9) * totalStep);
 
   return {
     input: safeInput,

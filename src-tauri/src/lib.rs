@@ -40,12 +40,18 @@ impl Default for BreakdownVisibility {
     }
 }
 
+fn default_result_rounding_step() -> f64 {
+    100.0
+}
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct AppConfig {
     version: u32,
     password_hash: String,
     rounding_step: f64,
+    #[serde(default = "default_result_rounding_step")]
+    result_rounding_step: f64,
     delivery: Vec<RangeRow>,
     markup: Vec<RangeRow>,
     #[serde(default)]
@@ -58,6 +64,7 @@ impl Default for AppConfig {
             version: 1,
             password_hash: DEFAULT_PASSWORD_HASH.to_string(),
             rounding_step: 100.0,
+            result_rounding_step: default_result_rounding_step(),
             delivery: vec![
                 row("d1", 0.0, Some(500.0), 100.0),
                 row("d2", 501.0, Some(1000.0), 200.0),

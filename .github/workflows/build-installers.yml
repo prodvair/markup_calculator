@@ -93,19 +93,21 @@ jobs:
       - name: Build universal macOS app
         run: npm run tauri:build -- --target universal-apple-darwin
 
-      - name: Zip macOS app
+      - name: Prepare macOS installers
         run: |
+          cp src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg \
+            "Markup.Calculator_1.0.0_macos.dmg"
           ditto -c -k --sequesterRsrc --keepParent \
             "src-tauri/target/universal-apple-darwin/release/bundle/macos/Markup Calculator.app" \
-            "Markup.Calculator_1.0.0_universal.app.zip"
+            "Markup.Calculator_1.0.0_macos.app.zip"
 
       - name: Upload macOS installers
         uses: actions/upload-artifact@v4
         with:
-          name: macos-universal
+          name: macos
           path: |
-            src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg
-            Markup.Calculator_1.0.0_universal.app.zip
+            Markup.Calculator_1.0.0_macos.dmg
+            Markup.Calculator_1.0.0_macos.app.zip
           if-no-files-found: error
 
   release:
