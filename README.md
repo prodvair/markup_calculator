@@ -33,7 +33,7 @@ npm run tauri:dev      # запуск в окне
 npm run tauri:build    # сборка пакетов: .app/.dmg на mac, .msi/.nsis на Windows
 ```
 
-Сборку Windows-пакетов лучше делать на Windows-машине: кросс-компиляция Tauri через macOS не поддерживается из коробки. Для этого добавлен GitHub Actions workflow `.github/workflows/build-windows.yml`: после пуша тега `v*` или запуска `workflow_dispatch` он собирает `.msi` и `.nsis` на `windows-latest` и кладёт их в artifact `windows-installers`.
+Сборку Windows-пакетов лучше делать на Windows-машине: кросс-компиляция Tauri через macOS не поддерживается из коробки. Для этого добавлен GitHub Actions workflow `.github/workflows/build-windows.yml`: после пуша тега `v*` или запуска `workflow_dispatch` он собирает `.msi` и `.nsis` на `windows-latest`, кладёт их в artifact `windows-installers` и публикует GitHub Release с установщиками. Прямая ссылка из Release доступна без авторизации, если репозиторий публичный.
 
 ## Где хранятся формулы
 
