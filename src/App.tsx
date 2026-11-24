@@ -82,8 +82,9 @@ export default function App() {
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
-      const key = event.key.toLowerCase();
-      if ((event.metaKey || event.ctrlKey) && event.shiftKey && key === "f") {
+      // event.code не зависит от раскладки: на русской F физически та же клавиша.
+      const isFKey = event.code === "KeyF" || event.key.toLowerCase() === "f";
+      if ((event.metaKey || event.ctrlKey) && event.shiftKey && isFKey) {
         event.preventDefault();
         requestEditor();
       }
@@ -119,7 +120,7 @@ export default function App() {
 
   const handleCopy = async () => {
     try {
-      await copyText(formatMoney(result.total));
+      await copyText(String(result.total));
       setToast("Цена скопирована");
     } catch (error) {
       setToast(`Не удалось скопировать: ${String(error)}`);
