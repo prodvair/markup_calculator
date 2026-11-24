@@ -35,8 +35,7 @@ npm run tauri:build    # сборка пакетов: .app/.dmg на mac, .msi/.
 
 Сборку пакетов удобно делать в GitHub Actions: `.github/workflows/build-installers.yml`. После пуша тега `v*` или запуска `workflow_dispatch` он собирает:
 
-- Windows x64: `.msi` и `.exe` (NSIS);
-- Windows x86 (32-bit): `.msi` и `.exe` (NSIS);
+- Windows: один 32-битный установщик `.exe` (NSIS) и `.msi` — он работает и на 32-бит, и на 64-бит Windows (WOW64), поэтому заказчику не нужно выбирать разрядность;
 - macOS universal (Intel + Apple Silicon): `.dmg` и `.app.zip`.
 
 Все файлы публикуются в один GitHub Release с прямой ссылкой без авторизации, если репозиторий публичный.

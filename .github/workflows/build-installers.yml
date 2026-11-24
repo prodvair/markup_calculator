@@ -11,15 +11,9 @@ permissions:
 
 jobs:
   build-windows:
+    # 32-битное приложение работает и на 32-бит, и на 64-бит Windows (через WOW64).
+    # Поэтому собираем одну версию вместо двух отдельных установщиков.
     runs-on: windows-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - target: x86_64-pc-windows-msvc
-            arch: x64
-          - target: i686-pc-windows-msvc
-            arch: x86
 
     steps:
       - name: Checkout
@@ -37,27 +31,36 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.target }}
+          targets: i686-pc-windows-msvc
 
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
-          key: ${{ matrix.arch }}
+          key: windows-universal
 
       - name: Install npm dependencies
         run: npm install
 
-      - name: Build Tauri app (${{ matrix.arch }})
-        run: npm run tauri:build -- --target ${{ matrix.target }}
+      - name: Build Windows installer
+        run: npm run tauri:build -- --target i686-pc-windows-msvc
 
-      - name: Upload Windows ${{ matrix.arch }} installers
+      - name: Prepare universal Windows installers
+        shell: pwsh
+        run: |
+          $bundle = "src-tauri/target/i686-pc-windows-msvc/release/bundle"
+          $nsis = Get-ChildItem -Path "$bundle/nsis" -Filter *.exe | Select-Object -First 1
+          $msi = Get-ChildItem -Path "$bundle/msi" -Filter *.msi | Select-Object -First 1
+          Copy-Item $nsis.FullName "Markup.Calculator_1.0.0_windows-setup.exe"
+          Copy-Item $msi.FullName "Markup.Calculator_1.0.0_windows.msi"
+
+      - name: Upload Windows installers
         uses: actions/upload-artifact@v4
         with:
-          name: windows-${{ matrix.arch }}
+          name: windows-universal
           path: |
-            src-tauri/target/${{ matrix.target }}/release/bundle/msi/*.msi
-            src-tauri/target/${{ matrix.target }}/release/bundle/nsis/*.exe
+            Markup.Calculator_1.0.0_windows-setup.exe
+            Markup.Calculator_1.0.0_windows.msi
           if-no-files-found: error
 
   build-macos:
