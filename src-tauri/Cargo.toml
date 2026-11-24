@@ -1,6 +1,6 @@
 [package]
 name = "runar-calculator"
-version = "1.0.0"
+version = "1.0.6"
 description = "Калькулятор округления, доставки и наценки"
 authors = ["Runar"]
 edition = "2021"
