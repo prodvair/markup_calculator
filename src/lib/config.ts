@@ -29,6 +29,12 @@ export const DEFAULT_CONFIG: AppConfig = {
     { id: "m9", min: 50001, max: 100000, value: 30 },
     { id: "m10", min: 100001, max: null, value: 30 },
   ],
+  breakdownVisible: {
+    rounded: false,
+    delivery: false,
+    withDelivery: false,
+    markup: false,
+  },
 };
 
 export function makeId(): string {
@@ -136,6 +142,12 @@ export function normalizeConfig(config: Partial<AppConfig>): AppConfig {
     roundingStep: Number.isFinite(step) && step > 0 ? round2(step) : 100,
     delivery: normalizeRanges(config.delivery ?? DEFAULT_CONFIG.delivery),
     markup: normalizeRanges(config.markup ?? DEFAULT_CONFIG.markup),
+    breakdownVisible: {
+      rounded: config.breakdownVisible?.rounded === true,
+      delivery: config.breakdownVisible?.delivery === true,
+      withDelivery: config.breakdownVisible?.withDelivery === true,
+      markup: config.breakdownVisible?.markup === true,
+    },
   };
 }
 

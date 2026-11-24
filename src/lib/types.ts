@@ -8,6 +8,13 @@ export type RangeRow = {
   value: number;
 };
 
+export type BreakdownVisibility = {
+  rounded: boolean;
+  delivery: boolean;
+  withDelivery: boolean;
+  markup: boolean;
+};
+
 export type AppConfig = {
   version: number;
   /** Хранится как sha256:<salt>:<hex>, а не открытым текстом. */
@@ -16,6 +23,8 @@ export type AppConfig = {
   roundingStep: number;
   delivery: RangeRow[];
   markup: RangeRow[];
+  /** Какие строки детализации показывать в основном окне. */
+  breakdownVisible: BreakdownVisibility;
 };
 
 export type ConfigPayload = {

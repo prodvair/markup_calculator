@@ -336,6 +336,40 @@ input {
   margin-bottom: 20px;
 }
 
+.visibility {
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px;
+}
+
+.visibility h3 {
+  margin: 0 0 12px;
+  font-size: 14px;
+}
+
+.visibility__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 14px;
+}
+
+.visibility__item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: #374151;
+  cursor: pointer;
+}
+
+.visibility__item input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #6d28d9;
+  cursor: pointer;
+}
+
 .btn {
   border: 1px solid #d1d5db;
   background: #fff;

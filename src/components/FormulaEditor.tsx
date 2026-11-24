@@ -1,7 +1,14 @@
 import { useState } from "react";
 import { revealConfig } from "../lib/config";
-import type { AppConfig, ConfigPayload } from "../lib/types";
+import type { AppConfig, BreakdownVisibility, ConfigPayload } from "../lib/types";
 import RangeEditor from "./RangeEditor";
+
+const VISIBILITY_OPTIONS: { key: keyof BreakdownVisibility; label: string }[] = [
+  { key: "rounded", label: "Округлённая сумма" },
+  { key: "delivery", label: "Доставка" },
+  { key: "withDelivery", label: "Сумма с доставкой" },
+  { key: "markup", label: "Наценка" },
+];
 
 type Props = {
   draft: AppConfig;
@@ -70,6 +77,31 @@ export default function FormulaEditor({
             <small>Хранится как SHA-256 хеш, а не открытым текстом.</small>
           </label>
         </div>
+
+        <section className="visibility">
+          <h3>Показывать в главном окне</h3>
+          <div className="visibility__grid">
+            {VISIBILITY_OPTIONS.map(({ key, label }) => (
+              <label className="visibility__item" key={key}>
+                <input
+                  type="checkbox"
+                  checked={draft.breakdownVisible[key]}
+                  onChange={(event) =>
+                    onChange({
+                      ...draft,
+                      breakdownVisible: {
+                        ...draft.breakdownVisible,
+                        [key]: event.target.checked,
+                      },
+                    })
+                  }
+                />
+                <span>{label}</span>
+              </label>
+            ))}
+          </div>
+          <p className="hint">По умолчанию все строки скрыты. Изменения вступят в силу после сохранения.</p>
+        </section>
 
         <RangeEditor
           title="Доставка"

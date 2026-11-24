@@ -22,12 +22,34 @@ struct RangeRow {
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
+struct BreakdownVisibility {
+    rounded: bool,
+    delivery: bool,
+    with_delivery: bool,
+    markup: bool,
+}
+
+impl Default for BreakdownVisibility {
+    fn default() -> Self {
+        Self {
+            rounded: false,
+            delivery: false,
+            with_delivery: false,
+            markup: false,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 struct AppConfig {
     version: u32,
     password_hash: String,
     rounding_step: f64,
     delivery: Vec<RangeRow>,
     markup: Vec<RangeRow>,
+    #[serde(default)]
+    breakdown_visible: BreakdownVisibility,
 }
 
 impl Default for AppConfig {
@@ -56,6 +78,7 @@ impl Default for AppConfig {
                 row("m9", 50001.0, Some(100000.0), 30.0),
                 row("m10", 100001.0, None, 30.0),
             ],
+            breakdown_visible: BreakdownVisibility::default(),
         }
     }
 }

@@ -90,6 +90,7 @@ export default function App() {
   }, [amount]);
 
   const result = useMemo(() => calculate(parsedAmount, config), [parsedAmount, config]);
+  const hasBreakdown = Object.values(config.breakdownVisible).some(Boolean);
 
   const handleAmountChange = (raw: string) => {
     const { value, rejectedNegative } = sanitizeAmount(raw);
@@ -212,24 +213,34 @@ export default function App() {
             </div>
           </div>
 
-          <dl className="breakdown">
-            <div>
-              <dt>Округлённая сумма</dt>
-              <dd>{formatMoney(result.rounded)}</dd>
-            </div>
-            <div>
-              <dt>Доставка</dt>
-              <dd className="breakdown__plus">+ {formatMoney(result.delivery)}</dd>
-            </div>
-            <div>
-              <dt>Сумма с доставкой</dt>
-              <dd>{formatMoney(result.withDelivery)}</dd>
-            </div>
-            <div>
-              <dt>Наценка</dt>
-              <dd className="breakdown__plus">+ {formatMoney(result.markupAmount)}</dd>
-            </div>
-          </dl>
+          {hasBreakdown && (
+            <dl className="breakdown">
+              {config.breakdownVisible.rounded && (
+                <div>
+                  <dt>Округлённая сумма</dt>
+                  <dd>{formatMoney(result.rounded)}</dd>
+                </div>
+              )}
+              {config.breakdownVisible.delivery && (
+                <div>
+                  <dt>Доставка</dt>
+                  <dd className="breakdown__plus">+ {formatMoney(result.delivery)}</dd>
+                </div>
+              )}
+              {config.breakdownVisible.withDelivery && (
+                <div>
+                  <dt>Сумма с доставкой</dt>
+                  <dd>{formatMoney(result.withDelivery)}</dd>
+                </div>
+              )}
+              {config.breakdownVisible.markup && (
+                <div>
+                  <dt>Наценка</dt>
+                  <dd className="breakdown__plus">+ {formatMoney(result.markupAmount)}</dd>
+                </div>
+              )}
+            </dl>
+          )}
         </section>
 
         <p className="footer-note">Формулы и пароль хранятся в JSON рядом с программой.</p>
