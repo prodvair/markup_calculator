@@ -2793,7 +2793,7 @@ dependencies = [
 
 [[package]]
 name = "runar-calculator"
-version = "1.0.9"
+version = "1.0.6"
 dependencies = [
  "arboard",
  "serde",
