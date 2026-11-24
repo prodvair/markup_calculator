@@ -180,7 +180,6 @@ export default function App() {
           <span className="brand__mark">₽</span>
           <div>
             <h1>Калькулятор наценки</h1>
-            <p>Округление → доставка → наценка</p>
           </div>
         </div>
         <button

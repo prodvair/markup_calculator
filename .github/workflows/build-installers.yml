@@ -51,16 +51,16 @@ jobs:
           $bundle = "src-tauri/target/i686-pc-windows-msvc/release/bundle"
           $nsis = Get-ChildItem -Path "$bundle/nsis" -Filter *.exe | Select-Object -First 1
           $msi = Get-ChildItem -Path "$bundle/msi" -Filter *.msi | Select-Object -First 1
-          Copy-Item $nsis.FullName "Markup.Calculator_1.0.7_windows-setup.exe"
-          Copy-Item $msi.FullName "Markup.Calculator_1.0.7_windows.msi"
+          Copy-Item $nsis.FullName "Markup.Calculator_1.0.8_windows-setup.exe"
+          Copy-Item $msi.FullName "Markup.Calculator_1.0.8_windows.msi"
 
       - name: Upload Windows installers
         uses: actions/upload-artifact@v4
         with:
           name: windows-universal
           path: |
-            Markup.Calculator_1.0.7_windows-setup.exe
-            Markup.Calculator_1.0.7_windows.msi
+            Markup.Calculator_1.0.8_windows-setup.exe
+            Markup.Calculator_1.0.8_windows.msi
           if-no-files-found: error
 
   build-macos:
@@ -96,18 +96,18 @@ jobs:
       - name: Prepare macOS installers
         run: |
           cp src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg \
-            "Markup.Calculator_1.0.7_macos.dmg"
+            "Markup.Calculator_1.0.8_macos.dmg"
           ditto -c -k --sequesterRsrc --keepParent \
             "src-tauri/target/universal-apple-darwin/release/bundle/macos/Markup Calculator.app" \
-            "Markup.Calculator_1.0.7_macos.app.zip"
+            "Markup.Calculator_1.0.8_macos.app.zip"
 
       - name: Upload macOS installers
         uses: actions/upload-artifact@v4
         with:
           name: macos
           path: |
-            Markup.Calculator_1.0.7_macos.dmg
-            Markup.Calculator_1.0.7_macos.app.zip
+            Markup.Calculator_1.0.8_macos.dmg
+            Markup.Calculator_1.0.8_macos.app.zip
           if-no-files-found: error
 
   release:
