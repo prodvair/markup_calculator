@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { makeId, normalizeRanges } from "../lib/config";
 import type { RangeRow } from "../lib/types";
+import IconButton from "./IconButton";
 
 type Props = {
   title: string;
@@ -95,16 +96,13 @@ export default function RangeEditor({ title, valueLabel, rows, onChange }: Props
               value={row.value}
               onChange={(event) => patchRow(row.id, { value: toNumber(event.target.value) })}
             />
-            <button
-              type="button"
-              className="icon-btn"
-              title="Удалить диапазон"
-              aria-label="Удалить диапазон"
+            <IconButton
+              label="Удалить диапазон"
               disabled={rows.length <= 1}
               onClick={() => removeRow(row.id)}
             >
               ×
-            </button>
+            </IconButton>
           </div>
         ))}
       </div>

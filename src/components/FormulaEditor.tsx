@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { revealConfig } from "../lib/config";
+import { HISTORY_DAY_OPTIONS, revealConfig } from "../lib/config";
 import type { AppConfig, BreakdownVisibility, ConfigPayload } from "../lib/types";
+import IconButton from "./IconButton";
 import RangeEditor from "./RangeEditor";
 
 const toStep = (value: string): number => Math.max(1, Number(value) || 1);
@@ -39,11 +40,12 @@ export default function FormulaEditor({
             <h2>Редактор формул</h2>
             <p className="hint">Изменения применяются после сохранения в JSON.</p>
           </div>
-          <button type="button" className="icon-btn" onClick={onCancel} aria-label="Закрыть">
+          <IconButton label="Закрыть" onClick={onCancel}>
             ×
-          </button>
+          </IconButton>
         </div>
 
+        <div className="modal__body">
         <div className="config-path">
           <span className="config-path__label">Файл формул</span>
           <code title={payload?.path}>{payload?.path ?? "—"}</code>
@@ -79,6 +81,23 @@ export default function FormulaEditor({
               }
             />
             <small>Вверх после расчёта наценки.</small>
+          </label>
+
+          <label className="field">
+            <span>Хранить историю, дней</span>
+            <select
+              value={draft.historyDays}
+              onChange={(event) =>
+                onChange({ ...draft, historyDays: Number(event.target.value) })
+              }
+            >
+              {HISTORY_DAY_OPTIONS.map((days) => (
+                <option key={days} value={days}>
+                  {days}
+                </option>
+              ))}
+            </select>
+            <small>Максимум 30 дней. Старые записи удалятся при сохранении.</small>
           </label>
 
           <label className="field">
@@ -132,11 +151,9 @@ export default function FormulaEditor({
           rows={draft.markup}
           onChange={(rows) => onChange({ ...draft, markup: rows })}
         />
+        </div>
 
-        <div className="modal__footer">
-          <button type="button" className="btn btn--ghost" onClick={onCancel}>
-            Отмена
-          </button>
+        <div className="modal__footer modal__footer--start">
           <button
             type="button"
             className="btn btn--primary"
@@ -144,6 +161,9 @@ export default function FormulaEditor({
             onClick={() => onSave(newPassword)}
           >
             {busy ? "Сохраняем…" : "Сохранить формулы"}
+          </button>
+          <button type="button" className="btn btn--ghost" onClick={onCancel}>
+            Отмена
           </button>
         </div>
       </div>

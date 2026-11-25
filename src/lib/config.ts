@@ -1,8 +1,17 @@
 import { invoke } from "@tauri-apps/api/core";
-import type { AppConfig, Calculation, ConfigPayload, RangeRow } from "./types";
+import type {
+  AppConfig,
+  Calculation,
+  ConfigPayload,
+  HistoryEntry,
+  HistoryPayload,
+  RangeRow,
+} from "./types";
 
 export const PASSWORD_SALT = "runar-calc-v1";
 const LOCAL_KEY = "runar-calculator-config-v1";
+const LOCAL_HISTORY_KEY = "runar-calculator-history-v1";
+export const HISTORY_DAY_OPTIONS = [1, 3, 7, 14, 30] as const;
 
 export const DEFAULT_CONFIG: AppConfig = {
   version: 1,
@@ -36,6 +45,7 @@ export const DEFAULT_CONFIG: AppConfig = {
     withDelivery: false,
     markup: false,
   },
+  historyDays: 7,
 };
 
 export function makeId(): string {
@@ -138,6 +148,7 @@ export function validateRanges(rows: RangeRow[]): string | null {
 export function normalizeConfig(config: Partial<AppConfig>): AppConfig {
   const step = Number(config.roundingStep);
   const resultStep = Number(config.resultRoundingStep);
+  const historyDays = Number(config.historyDays);
   return {
     version: 1,
     passwordHash: config.passwordHash?.trim() || DEFAULT_CONFIG.passwordHash,
@@ -151,6 +162,10 @@ export function normalizeConfig(config: Partial<AppConfig>): AppConfig {
       withDelivery: config.breakdownVisible?.withDelivery === true,
       markup: config.breakdownVisible?.markup === true,
     },
+    historyDays:
+      Number.isFinite(historyDays) && historyDays >= 1
+        ? Math.min(30, Math.round(historyDays))
+        : 7,
   };
 }
 
@@ -248,4 +263,33 @@ export async function copyText(text: string): Promise<void> {
     return;
   }
   throw new Error("Буфер обмена недоступен");
+}
+
+/** Оставляем записи не старше выбранного срока и ограничиваем размер файла. */
+export function pruneHistory(entries: HistoryEntry[], days: number): HistoryEntry[] {
+  const safeDays = Math.max(1, Math.min(30, days || 7));
+  const cutoff = Date.now() - safeDays * 24 * 60 * 60 * 1000;
+  return entries
+    .filter((entry) => Number.isFinite(entry.createdAt) && entry.createdAt >= cutoff)
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, 1000);
+}
+
+export async function loadHistory(): Promise<HistoryPayload> {
+  if (isTauri()) {
+    return invoke<HistoryPayload>("load_history");
+  }
+
+  const raw = localStorage.getItem(LOCAL_HISTORY_KEY);
+  const entries = raw ? (JSON.parse(raw) as HistoryEntry[]) : [];
+  return { entries, path: "localStorage (предпросмотр в браузере)" };
+}
+
+export async function saveHistory(entries: HistoryEntry[]): Promise<HistoryPayload> {
+  if (isTauri()) {
+    return invoke<HistoryPayload>("save_history", { entries });
+  }
+
+  localStorage.setItem(LOCAL_HISTORY_KEY, JSON.stringify(entries, null, 2));
+  return { entries, path: "localStorage (предпросмотр в браузере)" };
 }

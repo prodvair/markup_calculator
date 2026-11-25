@@ -16,7 +16,9 @@ export default function PasswordModal({ error, busy, onSubmit, onCancel }: Props
         className="modal modal--small"
         onSubmit={(event) => {
           event.preventDefault();
-          onSubmit(password);
+          const value = password;
+          setPassword("");
+          onSubmit(value);
         }}
       >
         <div className="modal__head">

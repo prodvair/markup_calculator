@@ -27,12 +27,29 @@ export type AppConfig = {
   markup: RangeRow[];
   /** Какие строки детализации показывать в основном окне. */
   breakdownVisible: BreakdownVisibility;
+  /** Сколько дней хранить историю расчётов: 1–30. */
+  historyDays: number;
 };
 
 export type ConfigPayload = {
   config: AppConfig;
   path: string;
   source: "executable" | "app_config";
+};
+
+export type HistoryEntry = {
+  id: string;
+  /** Unix-время в миллисекундах. */
+  createdAt: number;
+  input: number;
+  total: number;
+  /** Необязательный комментарий пользователя к расчёту. */
+  comment?: string;
+};
+
+export type HistoryPayload = {
+  entries: HistoryEntry[];
+  path: string;
 };
 
 export type Calculation = {
